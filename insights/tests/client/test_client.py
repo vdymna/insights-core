@@ -2,7 +2,6 @@ import sys
 import os
 import pytest
 import time
-import pytest
 
 from insights.client import InsightsClient
 from insights.client.archive import InsightsArchive
