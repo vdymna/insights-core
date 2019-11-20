@@ -10,8 +10,7 @@ from insights.client.client import _delete_archive_internal
 from insights import package_info
 from insights.client.constants import InsightsConstants as constants
 from insights.client.utilities import generate_machine_id
-from mock.mock import patch
-from mock.mock import Mock
+from mock.mock import patch, Mock, mock_open
 
 
 class FakeConnection(object):
@@ -411,11 +410,12 @@ def test_platform_upload(_legacy_upload, _, path_exists):
     _legacy_upload.assert_not_called()
 
 
+@patch('insights.client.client.open', new_callable=mock_open)
 @patch('insights.client.client.systemd_notify')
 @patch('insights.client.client.read_pidfile')
 @patch('insights.client.os.path.exists', return_value=True)
 @patch('insights.client.connection.InsightsConnection.upload_archive', return_value=Mock(status_code=200, text='{}'))
-def test_legacy_upload_systemd(_, path_exists, read_pidfile, systemd_notify):
+def test_legacy_upload_systemd(_, path_exists, read_pidfile, systemd_notify, op):
     '''
     Pidfile is read and systemd-notify is called for legacy upload
     '''
